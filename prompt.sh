@@ -30,7 +30,7 @@ tasks="expand rewrite polish"
 #         --dataset $D \
 #         --task $task \
 #         --n_samples 100 \
-#         --base_model_name $M \
+#         --base_model $M \
 #         --output_file $data_path/${D}_${M}_${task} \
 #         --do_temperature  --temperature 0.8
 #     done
@@ -46,8 +46,8 @@ for task in $tasks; do
     for M in $source_models; do
       for M1 in $scoring_models; do
         echo `date`, Evaluating Methods on ${D}_${M} ...
-        python scripts/detect_fixdistance.py --base_model_name $M1 --dataset $D --dataset_file $data_path/${D}_${M}_${task} --output_file $res_path/${D}_${M}_${task} --device $gpu_device
-        python scripts/detect_bartscore.py --base_model_name $M1 --dataset $D --dataset_file $data_path/${D}_${M}_${task} --output_file $res_path/${D}_${M}_${task} --device $gpu_device
+        python scripts/detect_fixdistance.py --base_model $M1 --dataset $D --dataset_file $data_path/${D}_${M}_${task} --output_file $res_path/${D}_${M}_${task} --device $gpu_device
+        python scripts/detect_bartscore.py --base_model $M1 --dataset $D --dataset_file $data_path/${D}_${M}_${task} --output_file $res_path/${D}_${M}_${task} --device $gpu_device
       done
     done
   done
