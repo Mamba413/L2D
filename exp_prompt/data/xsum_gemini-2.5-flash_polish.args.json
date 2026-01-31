@@ -1,0 +1,19 @@
+{
+    "output_file": "exp_prompt/data/xsum_gemini-2.5-flash_polish",
+    "task": "polish",
+    "dataset": "xsum",
+    "n_samples": 100,
+    "base_model_name": "gemini-2.5-flash",
+    "max_new_tokens": 300,
+    "do_top_k": false,
+    "top_k": 40,
+    "do_top_p": false,
+    "top_p": 0.96,
+    "do_temperature": true,
+    "temperature": 0.8,
+    "n_prompts": 30,
+    "seed": 0,
+    "device": "cuda",
+    "cache_dir": "../cache",
+    "model_name": "gemini-2.5-flash"
+}
