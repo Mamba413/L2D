@@ -41,7 +41,7 @@ def compute_sequence_logprob(tokenizer, model, texts, device):
     计算一批文本的 total log-prob（sum over tokens） under the base model.
     返回 tensor shape [len(texts)]，每个是 log p(text).
     """
-    pad_id = sampler.base_tokenizer.pad_token_id
+    pad_id = tokenizer.pad_token_id
 
     # Tokenize full texts
     encoded = tokenizer(texts, return_tensors="pt", padding=True).to(device)
