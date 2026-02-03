@@ -14,7 +14,7 @@ class PrefixSampler:
     def __init__(self, args, rewrite_prompt='l2d'):
         self.args = args
         self.base_tokenizer = load_tokenizer(args.rewrite_model, args.cache_dir)
-        self.base_model = load_model(args.base_model, args.device, args.cache_dir)
+        self.base_model = load_model(args.rewrite_model, args.device, args.cache_dir)
         if rewrite_prompt == 'l2d':
             self.prompt = PROMPT1
         elif rewrite_prompt == 'bartscore':
