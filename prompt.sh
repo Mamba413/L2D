@@ -40,18 +40,18 @@ tasks="expand rewrite polish"
 settings='gemma-9b:gemma-9b-instruct'
 scoring_models="gemma-9b-instruct"
 
-# # evaluate the rewrite-based method
-# for task in $tasks; do
-#   for D in $datasets; do
-#     for M in $source_models; do
-#       for M1 in $scoring_models; do
-#         echo `date`, Evaluating Methods on ${D}_${M} ...
-#         python scripts/detect_fixdistance.py --base_model $M1 --dataset $D --dataset_file $data_path/${D}_${M}_${task} --output_file $res_path/${D}_${M}_${task} --device $gpu_device
-#         python scripts/detect_bartscore.py --rewrite_model $M1 --dataset $D --dataset_file $data_path/${D}_${M}_${task} --output_file $res_path/${D}_${M}_${task} --device $gpu_device
-#       done
-#     done
-#   done
-# done
+# evaluate the rewrite-based method
+for task in $tasks; do
+  for D in $datasets; do
+    for M in $source_models; do
+      for M1 in $scoring_models; do
+        echo `date`, Evaluating Methods on ${D}_${M} ...
+        # python scripts/detect_fixdistance.py --base_model $M1 --dataset $D --dataset_file $data_path/${D}_${M}_${task} --output_file $res_path/${D}_${M}_${task} --device $gpu_device
+        python scripts/detect_bartscore.py --base_model $M1 --dataset $D --dataset_file $data_path/${D}_${M}_${task} --output_file $res_path/${D}_${M}_${task} --device $gpu_device
+      done
+    done
+  done
+done
 
 # # evaluate FastDetectGPT and Binoculars
 # for M in $source_models; do
@@ -103,39 +103,39 @@ scoring_models="gemma-9b-instruct"
 #   done
 # done
 
-# # evaluate RADIAR (cross-LLM training)
-# for M_test in $source_models; do
-#   for D in $datasets; do
-#     train_dataset=""
+# evaluate RADIAR (cross-LLM training)
+for M_test in $source_models; do
+  for D in $datasets; do
+    train_dataset=""
 
-#     for M_train in $source_models; do
-#       if [ "$M_train" = "$M_test" ]; then
-#         continue  # 排除与测试 LLM 相同的模型
-#       fi
+    for M_train in $source_models; do
+      if [ "$M_train" = "$M_test" ]; then
+        continue  # 排除与测试 LLM 相同的模型
+      fi
 
-#       for D1 in $datasets; do
-#         if [ "$D1" = "$D" ]; then
-#           continue  # 排除测试 dataset
-#         fi
+      for D1 in $datasets; do
+        if [ "$D1" = "$D" ]; then
+          continue  # 排除测试 dataset
+        fi
 
-#         for T1 in $tasks; do
-#           if [ -z "$train_dataset" ]; then
-#             train_dataset="${data_path}/${D1}_${M_train}_${T1}"
-#           else
-#             train_dataset="${train_dataset}&${data_path}/${D1}_${M_train}_${T1}"
-#           fi
-#         done
-#       done
-#     done
+        for T1 in $tasks; do
+          if [ -z "$train_dataset" ]; then
+            train_dataset="${data_path}/${D1}_${M_train}_${T1}"
+          else
+            train_dataset="${train_dataset}&${data_path}/${D1}_${M_train}_${T1}"
+          fi
+        done
+      done
+    done
 
-#     for task in $tasks; do
-#       python scripts/detect_raidar.py \
-#         --train_dataset ${train_dataset} \
-#         --eval_dataset ${data_path}/${D}_${M_test}_${task} \
-#         --output_file ${res_path}/${D}_${M_test}_${task}
-#     done
-#   done
-# done
+    for task in $tasks; do
+      python scripts/detect_raidar.py \
+        --train_dataset ${train_dataset} \
+        --eval_dataset ${data_path}/${D}_${M_test}_${task} \
+        --output_file ${res_path}/${D}_${M_test}_${task}
+    done
+  done
+done
 
 trained_ImBD_path=scripts/ImBD/ckpt/ai_detection_500_spo_lr_0.0001_beta_0.05_a_1
 trained_AdaDist_path=scripts/AdaDist/ckpt/
@@ -173,4 +173,3 @@ for M_test in $source_models; do
     done
   done
 done
-/usr/bin/shutdown 
