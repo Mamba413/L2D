@@ -88,7 +88,7 @@ if __name__ == '__main__':
     parser.add_argument('--dataset', type=str, default="xsum")
     parser.add_argument('--dataset_file', type=str, default="./exp_prompt/data/xsum_gemma-9b-instruct_expand")
     parser.add_argument('--regen_number', type=int, default=4)
-    parser.add_argument('--rewrite_model', type=str, default="mistralai-8b-instruct")
+    parser.add_argument('--rewrite_model', type=str, default="gemma-9b-instruct")
     parser.add_argument('--do_top_k', action='store_true')
     parser.add_argument('--top_k', type=int, default=40)
     parser.add_argument('--do_top_p', action='store_true')
