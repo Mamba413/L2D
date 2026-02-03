@@ -27,7 +27,7 @@ if __name__ == '__main__':
     parser.add_argument('--a', type=int, default=1, help="accumulation steps")
     parser.add_argument('--epochs', type=int, default=2, help="finetuning epochs")
     parser.add_argument('--datanum', type=int, default=200, help="num of training data")
-    parser.add_argument('--rewrite_model', type=str, default="mistralai-8b-instruct")
+    parser.add_argument('--rewrite_model', type=str, default="gemma-9b-instruct")
     parser.add_argument('--regen_number', type=int, default=2, help="rewrite number for each input")
     parser.add_argument('--batch_size', type=int, default=2, help="batch size for rewriting")
     parser.add_argument('--do_top_k', action='store_true')

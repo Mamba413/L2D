@@ -156,7 +156,7 @@ def classifier_eval(scaler, clf, texts_stats):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--train_dataset', type=str, default='exp_prompt/data/squad_claude-3-5-haiku_expand&exp_prompt/data/squad_claude-3-5-haiku_rewrite&exp_prompt/data/squad_claude-3-5-haiku_polish&exp_prompt/data/writing_claude-3-5-haiku_expand&exp_prompt/data/writing_claude-3-5-haiku_rewrite&exp_prompt/data/writing_claude-3-5-haiku_polish')
-    parser.add_argument('--rewrite_model', type=str, default="mistralai-8b-instruct")
+    parser.add_argument('--rewrite_model', type=str, default="gemma-9b-instruct")
     parser.add_argument('--regen_number', type=int, default=2, help="rewrite number for each input")
     parser.add_argument('--eval_dataset', type=str, default="./exp_prompt/data/xsum_claude-3-5-haiku_rewrite")
     parser.add_argument('--output_file', type=str, default="./exp_prompt/results/xsum_claude-3-5-haiku_rewrite")
