@@ -42,7 +42,7 @@ if __name__ == '__main__':
     parser.add_argument('--save_trained', action="store_true")
     parser.add_argument('--eval_dataset', type=str, default="./exp_prompt/data/xsum_gpt-4o_rewrite")
     parser.add_argument('--output_file', type=str, default="./exp_prompt/results/xsum_gpt-4o_rewrite")
-    parser.add_argument('--base_model', type=str, default="gemma-9b")
+    parser.add_argument('--base_model', type=str, default="gemma-9b-instruct")
     parser.add_argument('--cache_dir', type=str, default="../cache")
     parser.add_argument('--train_dataset', type=str, default='./exp_prompt/data/squad_gpt-4o_polish&./exp_prompt/data/writing_gpt-4o_expand')
     parser.add_argument('--device', type=str, default="cuda")
@@ -116,12 +116,19 @@ if __name__ == '__main__':
     val_data = CustomDatasetRewrite(data_json_dir=args.eval_dataset, args=args)
 
     ## load model
-    model = AdaDist(args.base_model, cache_dir=args.cache_dir)
-    criterion_fn_name = 'auc'
-    model.set_criterion_fn(criterion_fn_name)
     if args.from_pretrained:
         print(f"Loading ckpt from {args.from_pretrained}...")
-        model.from_pretrained(args.from_pretrained)
+        model = AdaDist.from_pretrained(
+            load_directory=args.from_pretrained,
+            model_name=args.base_model,
+            device=args.device,
+            cache_dir=args.cache_dir,
+        )
+    else:
+        model = AdaDist(args.base_model, device=args.device, cache_dir=args.cache_dir)
+    criterion_fn_name = 'auc'
+    model.set_criterion_fn(criterion_fn_name)
+        
 
     if args.eval_only:
         print("Evaluating model before tuning...")

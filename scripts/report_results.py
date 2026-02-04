@@ -59,14 +59,14 @@ def report_black_prompt_results(args):
     }
     methods2 = {
         'sampling_discrepancy_analytic': 'FDGPT',
-        'revised_gpt2': 'BARTScore',
+        'bartscorer': 'BARTScore',
         'roberta-large-openai-detector': 'RoBERTa',
         'radar': 'RADAR',
         'raidar': 'RAIDAR',
         'imbd': 'ImBD',
-        'rewrite_gpt': 'FD',
+        'fixdistance': 'FD',
         # 'adarewritegpt_auc.rewrite_4': 'Ours',
-        'adarewritegpt_auc': 'Ours',
+        'l2d': 'L2D',
     }
     all_methods = {**methods1, **methods2}  # 按顺序合并
 
@@ -136,7 +136,7 @@ def report_black_prompt_results(args):
                     for k_idx, method_key in enumerate(all_methods.keys()):
                         auc = _get_auc(d_key, m_key, sub, method_key)
                         scores[k_idx, m_idx, s_idx] = auc
-                        if method_key == 'adarewritegpt_auc':
+                        if method_key == 'l2d':
                             our_auc.append(auc)
                         if method_key == "rewrite_gpt":
                             fd_auc.append(auc)
@@ -154,7 +154,7 @@ def report_black_prompt_results(args):
 
         # 打印方法行
         method_items = list(all_methods.items())
-        ours_idx = list(all_methods.keys()).index("adarewritegpt_auc")
+        ours_idx = list(all_methods.keys()).index("l2d")
 
         for k_idx, (method_key, method_name) in enumerate(method_items):
             row_cells = []
@@ -255,7 +255,7 @@ def report_black_prompt_results_simplified(args):
         'raidar': 'RAIDAR',
         'imbd': 'ImBD',
         'rewrite_gpt': 'FD',
-        'adarewritegpt_auc': 'Ours',
+        'l2d': 'Ours',
     }
 
     def _get_auc(dataset_key, model_key, task_key, method_key):
@@ -334,7 +334,7 @@ def report_black_prompt_results_condensed(args):
         'raidar': 'RAIDAR',
         'imbd': 'ImBD',
         'rewrite_gpt': 'FD',
-        'adarewritegpt_auc': 'Ours',
+        'l2d': 'Ours',
     }
 
     # 从 JSON 获取 AUC
@@ -446,14 +446,14 @@ def report_diverse_results(args):
         'classification.bspline': 'ADGPT',
         # 'fair.raidar': 'RAIDAR',
         # 'fair.imbd': 'ImBD',
-        # 'fair.adarewritegpt_auc': 'Ours',
+        # 'fair.l2d': 'Ours',
         'raidar': 'RAIDAR',
         'imbd': 'ImBD',
-        'adarewritegpt_auc': 'Ours',
+        'l2d': 'Ours',
     }
 
-    # ours_key = 'fair.adarewritegpt_auc'
-    ours_key = 'adarewritegpt_auc'
+    # ours_key = 'fair.l2d'
+    ours_key = 'l2d'
 
     def _get_method_aurocs(dataset, model, method, filter=''):
         result_file = f'{args.result_path}/{dataset}_{model}{filter}.{method}.json'
@@ -642,7 +642,7 @@ def report_diverse_results_old(args):
         'raidar': 'RAIDAR',
         'imbd': 'ImBD',
         # 'adarewritegpt_mean_gap': 'RewriteGPT(Ada2)',
-        'adarewritegpt_auc': 'RewriteGPT',
+        'l2d': 'RewriteGPT',
         # 'fluoroscopy': 'TextFluoroscopy',
         # 'biscope': 'BiScope',
         # 'classification.bspline': 'AdaDetectGPT',
@@ -685,8 +685,8 @@ def report_diverse_results_old(args):
 def report_temperature_results(args):
     datasets = ["xsum", "squad", "writing"]
     temperatures = ["0.01", "0.2", "0.4", "0.6", "0.8", "1.0"]
-    # methods = ["raidar", "imbd", "adarewritegpt_auc"]
-    methods = ["adarewritegpt_auc"]
+    # methods = ["raidar", "imbd", "l2d"]
+    methods = ["l2d"]
 
     records = []
     # loop over datasets, temperatures, methods
@@ -746,9 +746,10 @@ def get_fpr(result_file, alpha=0.1):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    # parser.add_argument('--report_name', type=str, default="black_prompt_results")
-    parser.add_argument('--result_path', type=str, default="./exp_diverse/results/")
-    parser.add_argument('--report_name', type=str, default="diverse_results")
+    parser.add_argument('--report_name', type=str, default="black_prompt_results")
+    parser.add_argument('--result_path', type=str, default="./exp_prompt/results/")
+    # parser.add_argument('--result_path', type=str, default="./exp_diverse/results/")
+    # parser.add_argument('--report_name', type=str, default="diverse_results")
     # parser.add_argument('--result_path', type=str, default="./exp_attack/results/paraphrasing")
     # parser.add_argument('--result_path', type=str, default="./exp_attack/results/decoherence")
     # parser.add_argument('--result_path', type=str, default="./exp_attack/results/random")
@@ -760,8 +761,6 @@ if __name__ == '__main__':
     # parser.add_argument('--report_name', type=str, default="theory_results")
     # parser.add_argument('--result_path', type=str, default="./exp_attack/results/")
     # parser.add_argument('--report_name', type=str, default="attack_results")
-    # parser.add_argument('--result_path', type=str, default="./exp_theory_fineGPT/results")
-    # parser.add_argument('--report_name', type=str, default="multi_classification_results")
     # parser.add_argument('--result_path', type=str, default="./exp_topk/results")
     # parser.add_argument('--report_name', type=str, default="variance_results")
     # parser.add_argument('--alpha', type=float, default=0.10)

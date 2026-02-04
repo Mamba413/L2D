@@ -233,7 +233,8 @@ class AdaDist(nn.Module):
             scoring_dir, 
             device_map="auto", 
             low_cpu_mem_usage=True, 
-            use_safetensors=True
+            use_safetensors=True, 
+            cache_dir=kwargs['cache_dir'],
         )
 
         # # 3. 加载所有 null_distr
