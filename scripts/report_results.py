@@ -138,7 +138,7 @@ def report_black_prompt_results(args):
                         scores[k_idx, m_idx, s_idx] = auc
                         if method_key == 'l2d':
                             our_auc.append(auc)
-                        if method_key == "rewrite_gpt":
+                        if method_key == "fixdistance":
                             fd_auc.append(auc)
 
         # 高亮：第一名蓝色，第二名橙色
@@ -210,8 +210,8 @@ def report_black_prompt_results(args):
         print(" & ".join(row_cells) + " \\\\")
         print("\\midrule")
     
-    mean_improve_gain = [f"{np.mean(x):.2f}" for x in improve_gain]
-    mean_improve_abs_gain = [f"{np.mean(x):.2f}" for x in improve_abs_gain]
+    mean_improve_gain = [f"{np.mean(x):.2f}\\%" for x in improve_gain]
+    mean_improve_abs_gain = [f"{np.mean(x):.2f}\\%" for x in improve_abs_gain]
     mean_improve_gain = ", ".join(mean_improve_gain)
     mean_improve_abs_gain = ", ".join(mean_improve_abs_gain)
     print("\\bottomrule")
@@ -222,201 +222,6 @@ def report_black_prompt_results(args):
     gain_abs_fd = (np.array(our_auc) - np.array(fd_auc))
     gain_fd = (np.array(our_auc) - np.array(fd_auc)) / (1.0 - np.array(fd_auc))
     print(f"Average Gain over FD: Abs. Gain {np.mean(gain_abs_fd):.4f} Rel. Gain {np.mean(gain_fd):.4f}")
-
-def report_black_prompt_results_simplified(args):
-    import os
-    import numpy as np
-
-    # 数据集
-    datasets = {
-        'xsum': 'News',
-        'squad': 'Wiki',
-        'writing': 'Story',
-    }
-    # LLM
-    source_models = {
-        'claude-3-5-haiku': 'Claude-3.5',
-        'gpt-4o': 'GPT-4o',
-        'gemini-2.5-flash': 'Gemini',
-    }
-    # 任务
-    task_list = ['rewrite', 'polish', 'expand']
-
-    # 方法
-    methods = {
-        'likelihood': 'Likelihood',
-        'lrr': 'LRR',
-        'binoculars': 'Binoculars',
-        'ide_mle': 'IDE',
-        'sampling_discrepancy_analytic': 'FDGPT',
-        'revised_gpt2': 'BARTScore',
-        'roberta-large-openai-detector': 'RoBERTa',
-        'radar': 'RADAR',
-        'raidar': 'RAIDAR',
-        'imbd': 'ImBD',
-        'rewrite_gpt': 'FD',
-        'l2d': 'Ours',
-    }
-
-    def _get_auc(dataset_key, model_key, task_key, method_key):
-        path = f'{args.result_path}/{dataset_key}_{model_key}_{task_key}.{method_key}.json'
-        if os.path.exists(path):
-            return get_auroc(path)
-        return None   # 改成 None，便于过滤
-
-    print("\\begin{table}[htbp]")
-    print("\\centering")
-    print("\\small")
-    print("\\begin{tabular}{l l c}")
-    print("\\toprule")
-    print("Dataset & Method & Avg$\\pm$Std \\\\")
-    print("\\midrule")
-
-    # 每个 dataset 打印一个 block
-    for d_key, d_name in datasets.items():
-        method_items = list(methods.items())
-        n_methods = len(method_items)
-
-        # 打印 dataset 名（multirow）
-        print(f"\\multirow{{{n_methods}}}{{*}}{{{d_name}}}")
-
-        for idx, (method_key, method_name) in enumerate(method_items):
-            # 收集所有 AUC
-            auc_list = []
-            for model_key in source_models:
-                for task_key in task_list:
-                    auc = _get_auc(d_key, model_key, task_key, method_key)
-                    if auc is not None:
-                        auc_list.append(auc)
-
-            if len(auc_list) == 0:
-                mean_auc, std_auc = 0.0, 0.0
-            else:
-                mean_auc, std_auc = np.mean(auc_list), np.std(auc_list)
-
-            # 表格行
-            print(f" & {method_name} & {mean_auc:.3f}$\\pm${std_auc:.3f} \\\\")
-        print("\\midrule")
-
-    print("\\bottomrule")
-    print("\\end{tabular}")
-    print("\\caption{Simplified AUROC table: for each method we report a single mean±std across all models and tasks.}")
-    print("\\end{table}")
-
-def report_black_prompt_results_condensed(args):
-    # 数据集
-    datasets = {
-        'xsum': 'News',
-        'squad': 'Wiki',
-        'writing': 'Story',
-    }
-
-    # LLM
-    source_models = {
-        'claude-3-5-haiku': 'Claude-3.5',
-        'gpt-4o': 'GPT-4o',
-        'gemini-2.5-flash': 'Gemini',
-    }
-
-    # 任务
-    task_list = ['rewrite', 'polish', 'expand']
-
-    # 方法
-    methods = {
-        'likelihood': 'Likelihood',
-        'lrr': 'LRR',
-        'binoculars': 'Binoculars',
-        'ide_mle': 'IDE',
-        'sampling_discrepancy_analytic': 'FDGPT',
-        'revised_gpt2': 'BARTScore',
-        'roberta-large-openai-detector': 'RoBERTa',
-        'radar': 'RADAR',
-        'raidar': 'RAIDAR',
-        'imbd': 'ImBD',
-        'rewrite_gpt': 'FD',
-        'l2d': 'Ours',
-    }
-
-    # 从 JSON 获取 AUC
-    def _get_auc(dataset_key, model_key, task_key, method_key):
-        path = f'{args.result_path}/{dataset_key}_{model_key}_{task_key}.{method_key}.json'
-        if os.path.exists(path):
-            return get_auroc(path)
-        return None
-
-    # latex 表格开始
-    print("\\begin{table}[htbp]")
-    print("\\centering")
-    print("\\scriptsize")
-    print("\\setlength{\\tabcolsep}{3pt}")
-
-    # 列名数量 = 9 columns + 2 (avg,std)
-    total_cols = 2 + len(source_models) * len(task_list) + 2
-    print("\\begin{tabular}{l l " + "c" * (total_cols - 2) + "}")
-    print("\\toprule")
-
-    # 顶部表头
-    header_top = ["Dataset", "Method"]
-    for model_name in source_models.values():
-        header_top += [f"\\multicolumn{{3}}{{c}}{{{model_name}}}"]
-    header_top += ["Avg", "Std"]
-    print(" & ".join(header_top) + " \\\\")
-
-    # cmidrule
-    col_index = 3
-    cmis = []
-    for _ in source_models:
-        cmis.append(f"\\cmidrule(lr){{{col_index}-{col_index+2}}}")
-        col_index += 3
-    print("".join(cmis))
-
-    # 第二行表头（task names）
-    header_sub = [" ", " "]
-    for _ in source_models:
-        header_sub += ["rewrite", "polish", "expand"]
-    header_sub += [" ", " "]
-    print(" & ".join(header_sub) + " \\\\")
-    print("\\midrule")
-
-    # 遍历每个 dataset
-    for d_key, d_name in datasets.items():
-        method_items = list(methods.items())
-        n_methods = len(method_items)
-
-        print(f"\\multirow{{{n_methods}}}{{*}}{{{d_name}}}")
-
-        for idx, (method_key, method_name) in enumerate(method_items):
-
-            auc_values_flat = []  # 用于 avg/std
-
-            row_cells = ["", method_name]
-
-            for model_key in source_models.keys():
-                for task_key in task_list:
-                    auc = _get_auc(d_key, model_key, task_key, method_key)
-                    if auc is None:
-                        row_cells.append("---")
-                    else:
-                        row_cells.append(f"{auc:.3f}")
-                        auc_values_flat.append(auc)
-
-            # Avg + Std（对 9 个值）
-            if len(auc_values_flat) > 0:
-                avg = np.mean(auc_values_flat)
-                std = np.std(auc_values_flat)
-            else:
-                avg = std = 0.0
-
-            row_cells.append(f"{avg:.3f}")
-            row_cells.append(f"{std:.3f}")
-
-            print(" & ".join(row_cells) + " \\\\")
-        print("\\midrule")
-
-    print("\\bottomrule")
-    print("\\end{tabular}")
-    print("\\caption{AUROC across datasets with per-model per-task results, plus overall average and standard deviation.}")
-    print("\\end{table}")
             
 def report_diverse_results(args):
     report_rel_gain = True
@@ -635,7 +440,7 @@ def report_diverse_results_old(args):
         # 'perturbation_100': 'DetectGPT',
         'sampling_discrepancy_analytic': 'FastDetectGPT',
         'revised_gpt2': 'RevisedGPT',
-        # 'rewrite_gpt': 'RewriteGPT(Likelihood)',
+        # 'fixdistance': 'RewriteGPT(Likelihood)',
         # 'revised_gpt': 'RewriteGPT(Dist)',
         # 'adarewritegpt': 'RewriteGPT(Ada1)',
         'radar': 'RADAR',
@@ -756,13 +561,8 @@ if __name__ == '__main__':
     # parser.add_argument('--report_name', type=str, default="temperature_results")
     # parser.add_argument('--result_path', type=str, default="./exp_topk_prompt/results")
     # parser.add_argument('--report_name', type=str, default="gpt3_results")
-    # parser.add_argument('--result_path', type=str, default="./exp_theory/results_exact/")
-    # parser.add_argument('--result_path', type=str, default="./exp_sup/results/")
-    # parser.add_argument('--report_name', type=str, default="theory_results")
     # parser.add_argument('--result_path', type=str, default="./exp_attack/results/")
     # parser.add_argument('--report_name', type=str, default="attack_results")
-    # parser.add_argument('--result_path', type=str, default="./exp_topk/results")
-    # parser.add_argument('--report_name', type=str, default="variance_results")
     # parser.add_argument('--alpha', type=float, default=0.10)
     # parser.add_argument('--attack_prop', type=float, default=0.05)
     # parser.add_argument('--attack_prop', type=int, default=150)
@@ -770,7 +570,5 @@ if __name__ == '__main__':
 
     if args.report_name == 'black_prompt_results':
         report_black_prompt_results(args)
-        # report_black_prompt_results_simplified(args)
-        # report_black_prompt_results_condensed(args)
     if args.report_name == 'diverse_results':
         report_diverse_results(args)
