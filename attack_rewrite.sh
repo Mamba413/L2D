@@ -14,7 +14,8 @@ mkdir -p $exp_path $exp_path/data/ $exp_path/results/
 src_path=exp_prompt
 src_data_path=$src_path/data
 datasets="xsum squad writing"
-source_models="claude-3-5-haiku"
+M_test="claude-3-5-haiku"
+M_train="claude-3-5-haiku"
 M2='gemma-9b-instruct'
 paras="t5 random"  # "t5" for paraphrasing attack, or "random" for decoherence attack
 
@@ -32,84 +33,67 @@ for para in $paras; do
     done
 
     # evaluate RAIDAR (train on other LLMs)
-    for M_test in $source_models; do
-        for D in $datasets; do
-            train_dataset=""
+    for D in $datasets; do
+        train_dataset=""
 
-            # collect training data from other LLMs
-            for M_train in $source_models; do
-                if [ "$M_train" = "$M_test" ]; then
-                    continue  # 排除与测试 LLM 相同的模型
-                fi
+        # collect training data from other LLMs
+        for D1 in $datasets; do
+            if [ "$D1" = "$D" ]; then
+                continue  # 排除与测试集相同的 dataset
+            fi
 
-                for D1 in $datasets; do
-                    if [ "$D1" = "$D" ]; then
-                        continue  # 排除与测试集相同的 dataset
-                    fi
-
-                    # append three tasks for each (D1, M_train)
-                    if [ -z "$train_dataset" ]; then
-                        train_dataset="${data_path}/${D1}_${M_train}_polish&${data_path}/${D1}_${M_train}_rewrite&${data_path}/${D1}_${M_train}_expand"
-                    else
-                        train_dataset="${train_dataset}&${data_path}/${D1}_${M_train}_polish&${data_path}/${D1}_${M_train}_rewrite&${data_path}/${D1}_${M_train}_expand"
-                    fi
-                done
-            done
-
-            echo "Train data (RAIDAR): $train_dataset"
-            python scripts/detect_raidar.py \
-                --train_dataset ${train_dataset} \
-                --eval_dataset $data_path/${D}_${M_test}_polish \
-                --output_file $res_path/${D}_${M_test}_polish
+            # append three tasks for each (D1, M_train)
+            if [ -z "$train_dataset" ]; then
+                train_dataset="${data_path}/${D1}_${M_train}_polish&${data_path}/${D1}_${M_train}_rewrite&${data_path}/${D1}_${M_train}_expand"
+            else
+                train_dataset="${train_dataset}&${data_path}/${D1}_${M_train}_polish&${data_path}/${D1}_${M_train}_rewrite&${data_path}/${D1}_${M_train}_expand"
+            fi
         done
+
+        echo "Train data (RAIDAR): $train_dataset"
+        python scripts/detect_raidar.py \
+            --train_dataset ${train_dataset} \
+            --eval_dataset $data_path/${D}_${M_test}_polish \
+            --output_file $res_path/${D}_${M_test}_polish
     done
 
     # evaluate the ada-rewrite-based method + ImBD (train on other LLMs)
     trained_ImBD_path=scripts/ImBD/ckpt/ai_detection_500_spo_lr_0.0001_beta_0.05_a_1
     trained_AdaDist_path=./scripts/AdaDist/ckpt/
 
-    for M_test in $source_models; do
-        for D in $datasets; do
-            train_dataset=""
+    for D in $datasets; do
+        train_dataset=""
+        for D1 in $datasets; do
+            if [ "$D1" = "$D" ]; then
+                continue  # 排除测试 dataset
+            fi
 
-            for M_train in $source_models; do
-                if [ "$M_train" = "$M_test" ]; then
-                    continue  # 排除测试 LLM
-                fi
-
-                for D1 in $datasets; do
-                    if [ "$D1" = "$D" ]; then
-                        continue  # 排除测试 dataset
-                    fi
-
-                    if [ -z "$train_dataset" ]; then
-                        train_dataset="${data_path}/${D1}_${M_train}_polish&${data_path}/${D1}_${M_train}_rewrite&${data_path}/${D1}_${M_train}_expand"
-                    else
-                        train_dataset="${train_dataset}&${data_path}/${D1}_${M_train}_polish&${data_path}/${D1}_${M_train}_rewrite&${data_path}/${D1}_${M_train}_expand"
-                    fi
-                done
-            done
-
-            echo "Train data (AdaDist/ImBD): $train_dataset"
-
-            python scripts/detect_rewrite_ada.py \
-                --datanum 500 \
-                --base_model ${M2} \
-                --train_dataset ${train_dataset} \
-                --eval_after_train \
-                --eval_dataset $data_path/${D}_${M_test}_polish \
-                --output_file $res_path/${D}_${M_test}_polish \
-                --from_pretrained ${trained_AdaDist_path}
-
-            python scripts/detect_ImBD.py \
-                --datanum 500 \
-                --base_model ${M2} \
-                --train_dataset ${train_dataset} \
-                --eval_after_train \
-                --eval_dataset $data_path/${D}_${M_test}_polish \
-                --output_file $res_path/${D}_${M_test}_polish \
-                --from_pretrained ${trained_ImBD_path}
+            if [ -z "$train_dataset" ]; then
+                train_dataset="${data_path}/${D1}_${M_train}_polish&${data_path}/${D1}_${M_train}_rewrite&${data_path}/${D1}_${M_train}_expand"
+            else
+                train_dataset="${train_dataset}&${data_path}/${D1}_${M_train}_polish&${data_path}/${D1}_${M_train}_rewrite&${data_path}/${D1}_${M_train}_expand"
+            fi
         done
+
+        echo "Train data (AdaDist/ImBD): $train_dataset"
+
+        python scripts/detect_l2d.py \
+            --datanum 500 \
+            --base_model ${M2} \
+            --train_dataset ${train_dataset} \
+            --eval_after_train \
+            --eval_dataset $data_path/${D}_${M_test}_polish \
+            --output_file $res_path/${D}_${M_test}_polish \
+            --from_pretrained ${trained_AdaDist_path}
+
+        python scripts/detect_ImBD.py \
+            --datanum 500 \
+            --base_model ${M2} \
+            --train_dataset ${train_dataset} \
+            --eval_after_train \
+            --eval_dataset $data_path/${D}_${M_test}_polish \
+            --output_file $res_path/${D}_${M_test}_polish \
+            --from_pretrained ${trained_ImBD_path}
     done
 done
 

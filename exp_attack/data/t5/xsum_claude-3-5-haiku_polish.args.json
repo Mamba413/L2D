@@ -1,0 +1,10 @@
+{
+    "output_file": "exp_attack/data/t5/xsum_claude-3-5-haiku_polish",
+    "dataset": "xsum",
+    "dataset_file": "exp_prompt/data/xsum_claude-3-5-haiku_polish",
+    "t5_model_name": "Vamsi/T5_Paraphrase_Paws",
+    "paraphraser": "t5",
+    "seed": 0,
+    "device": "cpu",
+    "cache_dir": "../cache"
+}

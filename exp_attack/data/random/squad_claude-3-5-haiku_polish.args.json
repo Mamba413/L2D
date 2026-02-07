@@ -1,0 +1,10 @@
+{
+    "output_file": "exp_attack/data/random/squad_claude-3-5-haiku_polish",
+    "dataset": "squad",
+    "dataset_file": "exp_prompt/data/squad_claude-3-5-haiku_polish",
+    "t5_model_name": "Vamsi/T5_Paraphrase_Paws",
+    "paraphraser": "random",
+    "seed": 0,
+    "device": "cpu",
+    "cache_dir": "../cache"
+}
