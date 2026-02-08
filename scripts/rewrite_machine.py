@@ -71,10 +71,6 @@ class PrefixSampler:
             sampled_text = self._sample_rewrite_text_from_model(original_text)
 
             for o, s in zip(original_text, sampled_text):
-                if self.args.dataset == 'pubmed':
-                    s = _truncate_to_substring(s, 'Question:', 2)
-                    o = o.replace(custom_datasets.SEPARATOR, ' ')
-
                 # add to the data
                 data["original"].append(o)
                 data["sampled"].append(s)

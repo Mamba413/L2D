@@ -17,19 +17,24 @@ datasets="xsum squad writing"
 M_test="claude-3-5-haiku"
 M_train="claude-3-5-haiku"
 M2='gemma-9b-instruct'
-paras="t5 random"  # "t5" for paraphrasing attack, or "random" for decoherence attack
+paras="random t5"  # "t5" for paraphrasing attack, or "random" for decoherence attack
 
 for para in $paras; do
     data_path=$exp_path/data/$para
     res_path=$exp_path/results/$para
     mkdir -p $data_path $res_path
 
-    # preparing dataset
+    # # preparing dataset
+    # for D in $datasets; do
+    #     for M in $source_models; do
+    #         echo `date`, Preparing dataset ${D}_${M} by paraphrasing  ${src_data_path}/${D}_${M} ...
+    #         python scripts/paraphrasing.py --dataset $D --dataset_file $src_data_path/${D}_${M}_polish --paraphraser $para --output_file $data_path/${D}_${M}_polish
+    #     done
+    # done
+    
+    # evaluate FixDistance
     for D in $datasets; do
-        for M in $source_models; do
-            echo `date`, Preparing dataset ${D}_${M} by paraphrasing  ${src_data_path}/${D}_${M} ...
-            python scripts/paraphrasing.py --dataset $D --dataset_file $src_data_path/${D}_${M}_polish --paraphraser $para --output_file $data_path/${D}_${M}_polish
-        done
+        python scripts/detect_fixdistance.py --base_model $M2 --dataset $D --dataset_file $data_path/${D}_${M_test}_polish --output_file $res_path/${D}_${M_test}_polish --regen_number 2 --batch_size 2
     done
 
     # evaluate RAIDAR (train on other LLMs)
@@ -54,7 +59,9 @@ for para in $paras; do
         python scripts/detect_raidar.py \
             --train_dataset ${train_dataset} \
             --eval_dataset $data_path/${D}_${M_test}_polish \
-            --output_file $res_path/${D}_${M_test}_polish
+            --output_file $res_path/${D}_${M_test}_polish \
+            --regen_number 2 \
+            --batch_size 2
     done
 
     # evaluate the ada-rewrite-based method + ImBD (train on other LLMs)
@@ -84,9 +91,11 @@ for para in $paras; do
             --eval_after_train \
             --eval_dataset $data_path/${D}_${M_test}_polish \
             --output_file $res_path/${D}_${M_test}_polish \
-            --from_pretrained ${trained_AdaDist_path}
+            --from_pretrained ${trained_AdaDist_path} \
+            --regen_number 2 \
+            --batch_size 2
 
-        python scripts/detect_ImBD.py \
+        python scripts/detect_ImBD_task.py \
             --datanum 500 \
             --base_model ${M2} \
             --train_dataset ${train_dataset} \
@@ -96,6 +105,4 @@ for para in $paras; do
             --from_pretrained ${trained_ImBD_path}
     done
 done
-
-
 

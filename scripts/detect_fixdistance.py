@@ -74,6 +74,7 @@ def experiment(args):
     # load data
     data = load_data(args.dataset_file)
     n_samples = len(data["sampled"])
+    # n_samples = 2
     # evaluate criterion
     name = "fixdistance"
     torch.manual_seed(args.seed)
