@@ -17,26 +17,30 @@ datasets="xsum squad writing"
 M_test="claude-3-5-haiku"
 M_train="claude-3-5-haiku"
 M2='gemma-9b-instruct'
-# paras="random t5"  # "t5" for paraphrasing attack, or "random" for decoherence attack
-paras="t5"
+# paras="vanilla random t5"  # "vanilla" for no attack, "t5" for paraphrasing attack, or "random" for decoherence attack
+paras="vanilla"
 
 for para in $paras; do
     data_path=$exp_path/data/$para
     res_path=$exp_path/results/$para
     mkdir -p $data_path $res_path
 
-    # # preparing dataset
-    # for D in $datasets; do
-    #     for M in $source_models; do
-    #         echo `date`, Preparing dataset ${D}_${M} by paraphrasing  ${src_data_path}/${D}_${M} ...
-    #         python scripts/paraphrasing.py --dataset $D --dataset_file $src_data_path/${D}_${M}_polish --paraphraser $para --output_file $data_path/${D}_${M}_polish
-    #     done
-    # done
-    
-    # # evaluate FixDistance
-    # for D in $datasets; do
-    #     python scripts/detect_fixdistance.py --base_model $M2 --dataset $D --dataset_file $data_path/${D}_${M_test}_polish --output_file $res_path/${D}_${M_test}_polish --regen_number 2 --batch_size 2
-    # done
+    # preparing dataset
+    if [ "$para" != "vanilla" ]; then
+        for D in $datasets; do
+            for M in $source_models; do
+                echo "$(date)", Preparing ${D}_${M} using paraphraser: $para
+                python scripts/paraphrasing.py \
+                    --dataset $D \
+                    --dataset_file ${src_data_path}/${D}_${M}_polish \
+                    --paraphraser $para \
+                    --output_file ${data_path}/${D}_${M}_polish
+            done
+        done
+    else
+        echo "$(date)", Copying original data to $data_path
+        cp -r "${src_data_path}/." "$data_path/"
+    fi
 
     # evaluate RAIDAR (train on other LLMs)
     for D in $datasets; do
@@ -65,40 +69,40 @@ for para in $paras; do
             --batch_size 2
     done
 
-    # evaluate L2D & ImBD
-    for D in $datasets; do
-        train_dataset=""
-        for D1 in $datasets; do
-            if [ "$D1" = "$D" ]; then
-                continue  # 排除测试 dataset
-            fi
+    # # evaluate L2D & ImBD
+    # for D in $datasets; do
+    #     train_dataset=""
+    #     for D1 in $datasets; do
+    #         if [ "$D1" = "$D" ]; then
+    #             continue  # 排除测试 dataset
+    #         fi
 
-            if [ -z "$train_dataset" ]; then
-                train_dataset="${data_path}/${D1}_${M_train}_polish&${data_path}/${D1}_${M_train}_rewrite&${data_path}/${D1}_${M_train}_expand"
-            else
-                train_dataset="${train_dataset}&${data_path}/${D1}_${M_train}_polish&${data_path}/${D1}_${M_train}_rewrite&${data_path}/${D1}_${M_train}_expand"
-            fi
-        done
+    #         if [ -z "$train_dataset" ]; then
+    #             train_dataset="${data_path}/${D1}_${M_train}_polish&${data_path}/${D1}_${M_train}_rewrite&${data_path}/${D1}_${M_train}_expand"
+    #         else
+    #             train_dataset="${train_dataset}&${data_path}/${D1}_${M_train}_polish&${data_path}/${D1}_${M_train}_rewrite&${data_path}/${D1}_${M_train}_expand"
+    #         fi
+    #     done
 
-        echo "Train data (AdaDist/ImBD): $train_dataset"
+    #     echo "Train data (AdaDist/ImBD): $train_dataset"
 
-        python scripts/detect_l2d.py \
-            --datanum 500 \
-            --base_model ${M2} \
-            --train_dataset ${train_dataset} \
-            --eval_after_train \
-            --eval_dataset $data_path/${D}_${M_test}_polish \
-            --output_file $res_path/${D}_${M_test}_polish \
-            --regen_number 2 \
-            --batch_size 2
+    #     python scripts/detect_l2d.py \
+    #         --datanum 500 \
+    #         --base_model ${M2} \
+    #         --train_dataset ${train_dataset} \
+    #         --eval_after_train \
+    #         --eval_dataset $data_path/${D}_${M_test}_polish \
+    #         --output_file $res_path/${D}_${M_test}_polish \
+    #         --regen_number 2 \
+    #         --batch_size 2
 
-        # python scripts/detect_ImBD_task.py \
-        #     --datanum 500 \
-        #     --base_model ${M2} \
-        #     --train_dataset ${train_dataset} \
-        #     --eval_after_train \
-        #     --eval_dataset $data_path/${D}_${M_test}_polish \
-        #     --output_file $res_path/${D}_${M_test}_polish
-    done
+    #     python scripts/detect_ImBD_task.py \
+    #         --datanum 500 \
+    #         --base_model ${M2} \
+    #         --train_dataset ${train_dataset} \
+    #         --eval_after_train \
+    #         --eval_dataset $data_path/${D}_${M_test}_polish \
+    #         --output_file $res_path/${D}_${M_test}_polish
+    # done
 done
-/usr/bin/shutdown
+# /usr/bin/shutdown
