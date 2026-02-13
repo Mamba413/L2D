@@ -17,7 +17,8 @@ datasets="xsum squad writing"
 M_test="claude-3-5-haiku"
 M_train="claude-3-5-haiku"
 M2='gemma-9b-instruct'
-paras="random t5"  # "t5" for paraphrasing attack, or "random" for decoherence attack
+# paras="random t5"  # "t5" for paraphrasing attack, or "random" for decoherence attack
+paras="t5"
 
 for para in $paras; do
     data_path=$exp_path/data/$para
@@ -32,10 +33,10 @@ for para in $paras; do
     #     done
     # done
     
-    # evaluate FixDistance
-    for D in $datasets; do
-        python scripts/detect_fixdistance.py --base_model $M2 --dataset $D --dataset_file $data_path/${D}_${M_test}_polish --output_file $res_path/${D}_${M_test}_polish --regen_number 2 --batch_size 2
-    done
+    # # evaluate FixDistance
+    # for D in $datasets; do
+    #     python scripts/detect_fixdistance.py --base_model $M2 --dataset $D --dataset_file $data_path/${D}_${M_test}_polish --output_file $res_path/${D}_${M_test}_polish --regen_number 2 --batch_size 2
+    # done
 
     # evaluate RAIDAR (train on other LLMs)
     for D in $datasets; do
@@ -64,10 +65,7 @@ for para in $paras; do
             --batch_size 2
     done
 
-    # evaluate the ada-rewrite-based method + ImBD (train on other LLMs)
-    trained_ImBD_path=scripts/ImBD/ckpt/ai_detection_500_spo_lr_0.0001_beta_0.05_a_1
-    trained_AdaDist_path=./scripts/AdaDist/ckpt/
-
+    # evaluate L2D & ImBD
     for D in $datasets; do
         train_dataset=""
         for D1 in $datasets; do
@@ -91,18 +89,16 @@ for para in $paras; do
             --eval_after_train \
             --eval_dataset $data_path/${D}_${M_test}_polish \
             --output_file $res_path/${D}_${M_test}_polish \
-            --from_pretrained ${trained_AdaDist_path} \
             --regen_number 2 \
             --batch_size 2
 
-        python scripts/detect_ImBD_task.py \
-            --datanum 500 \
-            --base_model ${M2} \
-            --train_dataset ${train_dataset} \
-            --eval_after_train \
-            --eval_dataset $data_path/${D}_${M_test}_polish \
-            --output_file $res_path/${D}_${M_test}_polish \
-            --from_pretrained ${trained_ImBD_path}
+        # python scripts/detect_ImBD_task.py \
+        #     --datanum 500 \
+        #     --base_model ${M2} \
+        #     --train_dataset ${train_dataset} \
+        #     --eval_after_train \
+        #     --eval_dataset $data_path/${D}_${M_test}_polish \
+        #     --output_file $res_path/${D}_${M_test}_polish
     done
 done
-
+/usr/bin/shutdown
