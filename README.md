@@ -8,10 +8,6 @@ This repository contains the official implementation of **[Learn-to-Distance: Di
 L2D provides a **geometric projection** viewpoint on the effectiveness of rewrite-based detectors (**Figure 1** 🧠)  
 and strengthens this paradigm via **distance learning** (**Figure 2** 🧭).
 
----
-
-## 🧠 Intuition & Workflow
-
 <figure style="margin: 0;">
   <p align="center" style="margin: 0;">
     <img src="figure/Projection.png" alt="Projection intuition behind rewrite-based detection" width="60%">
