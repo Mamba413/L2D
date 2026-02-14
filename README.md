@@ -2,13 +2,32 @@
 
 [![ICLR 2026](https://img.shields.io/badge/ICLR-2026-7B68EE)](https://openreview.net/forum?id=2ZUPeEM3FH)
 ![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white)
-![PyTorch](https://img.shields.io/badge/PyTorch-2.7+-EE4C2C?logo=pytorch&logoColor=white)
 
 This repository contains the official implementation of **[Learn-to-Distance: Distance Learning for Detecting LLM-Generated Text](https://openreview.net/forum?id=2ZUPeEM3FH)** (accepted at **ICLR 2026**).  
-L2D provides a **geometric projection** viewpoint on the effectiveness of **rewrite-based detectors**, and strengthens this paradigm via **distance learning**. We build upon and extend code from **[AdaDetectGPT](https://github.com/Mamba413/AdaDetectGPT)**.
+L2D provides 
+
+<p align="center">
+a **geometric projection** viewpoint on the effectiveness of rewrite-based detectors (see the second figure), 
+</p>
+
+and strengthens 
+
+<p align="center">
+this paradigm via **distance learning** (see the second figure). 
+</p>
+
+<p align="center">
+  <img src="figure/Projection.png" alt="L2D workflow" width="95%">
+</p>
+<p align="center">
+Figure 1: the rationale behind rewrite-based methods: the brown dot represents a human-authored text after embedding, while the two green dots represent its projection onto the LLM subspace and an LLM-generated text produced from an unobserved prompt, respectively. From left to right, the purple dots denote the reconstructions of the first green dot, the brown dot and the second green dot. As illustrated, $d_1 > d_2$, indicating that the reconstruction error for human text is larger than that for LLM-generated text, which aligns with Proposition 1 in the paper. Additionally, $d_1 > d_3$ suggests that rewrite-based methods remain robust to prompt-induced distribution shifts, as formalized in Proposition 2 in the paper.
+</p>
 
 <p align="center">
   <img src="figure/workflow.png" alt="L2D workflow" width="95%">
+</p>
+<p align="center">
+Workflow of the proposal. Our method adaptively learn a distance metric to measure the discrepancy between human and LLM-generated texts for detection.
 </p>
 
 ## 🛠️ Installation
@@ -100,6 +119,8 @@ The `scripts/` directory contains implementations of various LLM detection metho
 | **RADIAR**                  | `detect_radiar.py`     | [arXiv:2401.12970](https://arxiv.org/abs/2401.12970)            |
 | **RoBERTa OpenAI Detector** | `detect_roberta.py`    | [arXiv:1908.09203](https://arxiv.org/abs/1908.09203)            |
 
+We build upon and extend code from **[AdaDetectGPT](https://github.com/Mamba413/AdaDetectGPT)**.
+
 ### Reproducibility guide
 - `exp_diverse.sh`: generate Table 1 and Tables B1–B4
 - `exp_prompt.sh`: generate Table 2
@@ -127,4 +148,4 @@ If you find this work useful, please consider citing our paper:
 }
 ```
 
-If you have any questions, please feel free to open an [issue](https://github.com/Mamba413/L2D/issues)
+If you have any questions, please feel free to open an [issue](https://github.com/Mamba413/L2D/issues).
