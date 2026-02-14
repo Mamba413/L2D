@@ -18,37 +18,12 @@ def from_pretrained(cls, model_name, kwargs, cache_dir):
     return cls.from_pretrained(model_name, **kwargs, cache_dir=cache_dir)
 
 # predefined models
-model_fullnames = {  'gpt2': 'gpt2',
-                     'gpt2-xl': 'gpt2-xl',
-                     'opt-2.7b': 'facebook/opt-2.7b',
-                     'gpt-neo-2.7B': 'EleutherAI/gpt-neo-2.7B',
-                     'gpt-j-6B': 'EleutherAI/gpt-j-6B',
-                     'gpt-neox-20b': 'EleutherAI/gpt-neox-20b',
-                     'mgpt': 'sberbank-ai/mGPT',
-                     'pubmedgpt': 'stanford-crfm/pubmedgpt',
-                     'mt5-xl': 'google/mt5-xl',
-                     'llama-13b': 'huggyllama/llama-13b',
-                     'qwen-7b': 'Qwen/Qwen2.5-7B',
-                     'qwen-7b-instruct': 'Qwen/Qwen2.5-7B-Instruct',
-                     'mistralai-7b-instruct': 'mistralai/Mistral-7B-Instruct-v0.3',
-                     'llama3-8b': 'meta-llama/Meta-Llama-3-8B',
-                     'llama3-8b-instruct': 'meta-llama/Meta-Llama-3-8B-Instruct',
-                     'llama4-17b':'meta-llama/Llama-4-Scout-17B-16E-Instruct',
-                     'falcon-7b': 'tiiuae/falcon-7b',
-                     'llama2-13b': 'TheBloke/Llama-2-13B-fp16',
-                     'llama2-13b-chat': 'meta-llama/Llama-2-13b-chat-hf', 
-                     'qwen-14b': 'Qwen/Qwen3-14B',
-                     'qwen-14b-base': 'Qwen/Qwen3-14B-Base',
-                     'gemma-9b': 'google/gemma-2-9b',
-                     'gemma-9b-instruct': 'google/gemma-2-9b-it',
-                     'gemma-12b': 'google/gemma-3-12b-pt',
-                     'gemma-12b-instruct': 'google/gemma-3-12b-it',
-                     'bloom-7b1': 'bigscience/bloom-7b1',
-                     'opt-13b': 'facebook/opt-13b',
-                     'pythia-12b': 'EleutherAI/pythia-12b',
-                     'falcon-7b-instruct': 'tiiuae/falcon-7b-instruct',
-                     }
-float16_models = ['gpt-neo-2.7B', 'gpt-j-6B', 'gpt-neox-20b', 'qwen-7b', 'qwen-7b-instruct', 'mistralai-7b', 'llama3-8b', 'llama3-8b-instruct', 'llama-13b', 'llama2-13b', 'llama4-17b', 'bloom-7b1', 'opt-13b', 'pythia-12b', 'falcon-7b', 'falcon-7b-instruct', 'llama2-13b-chat', 'qwen-14b', 'qwen-14b-base', 'gemma-12b', 'gemma-12b-instruct', 'gemma-9b', 'gemma-9b-instruct', 'mistralai-7b-base', 'mistralai-7b-instruct']
+model_fullnames = {  
+    'gemma-9b': 'google/gemma-2-9b',
+    'gemma-9b-instruct': 'google/gemma-2-9b-it',
+    'qwen-4b': "Qwen/Qwen3-4B"
+}
+float16_models = ['gemma-9b', 'gemma-9b-instruct', 'qwen-4b']
 
 def get_model_fullname(model_name):
     return model_fullnames[model_name] if model_name in model_fullnames else model_name
