@@ -201,11 +201,11 @@ for M_test in $source_models; do
 
     echo "Train data: $train_dataset"
     python scripts/detect_l2d.py --datanum 500 --base_model $scoring_models --train_dataset ${train_dataset} --save_trained
-    python scripts/detect_ImBD_task.py --datanum 500 --base_model $scoring_models --train_dataset ${train_dataset} --save_trained
+    python scripts/detect_ImBD.py --datanum 500 --base_model $scoring_models --train_dataset ${train_dataset} --save_trained
 
     for task in $tasks; do
       python scripts/detect_l2d.py --eval_only --base_model $scoring_models --eval_dataset ${data_path}/${D}_${M_test}_${task} --output_file ${res_path}/${D}_${M_test}_${task} --from_pretrained $trained_AdaDist_path
-      python scripts/detect_ImBD_task.py --eval_only --base_model $scoring_models --eval_dataset $data_path/${D}_${M_test}_${task} --output_file $res_path/${D}_${M_test}_${task} --from_pretrained $trained_ImBD_path
+      python scripts/detect_ImBD.py --eval_only --base_model $scoring_models --eval_dataset $data_path/${D}_${M_test}_${task} --output_file $res_path/${D}_${M_test}_${task} --from_pretrained $trained_ImBD_path
     done
   done
 done

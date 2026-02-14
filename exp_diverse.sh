@@ -182,11 +182,11 @@ for setting in 1 2; do
   done
 
   echo "Train data: $my_train_dataset_str"
-  python scripts/detect_ImBD_task.py --datanum 500 --base_model "$scoring_models" --train_dataset "$my_train_dataset_str" --save_trained
+  python scripts/detect_ImBD.py --datanum 500 --base_model "$scoring_models" --train_dataset "$my_train_dataset_str" --save_trained
 
   for D in $eval_datasets; do
     for M in $eval_models; do
-      python scripts/detect_ImBD_task.py --eval_only --base_model "$scoring_models" --eval_dataset "$data_path/${D}_${M}" --output_file "$res_path/${D}_${M}" --from_pretrained "$trained_model_path"
+      python scripts/detect_ImBD.py --eval_only --base_model "$scoring_models" --eval_dataset "$data_path/${D}_${M}" --output_file "$res_path/${D}_${M}" --from_pretrained "$trained_model_path"
     done
   done
 done

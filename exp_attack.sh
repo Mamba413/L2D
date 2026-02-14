@@ -95,7 +95,7 @@ for para in $paras; do
             --regen_number 2 \
             --batch_size 2
 
-        python scripts/detect_ImBD_task.py \
+        python scripts/detect_ImBD.py \
             --datanum 500 \
             --base_model ${M2} \
             --train_dataset ${train_dataset} \
