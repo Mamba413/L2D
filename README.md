@@ -19,14 +19,13 @@ and strengthens this paradigm via **distance learning** (**Figure 2** 🧭).
 
 <details style="margin: -8px 0 0 0;">
   <summary><b>📝 Full explanation for Figure 1</b></summary>
-
   The brown dot represents a human-authored text after embedding, while the two green dots represent its projection onto the LLM subspace and an LLM-generated text produced from an unobserved prompt, respectively. From left to right, the purple dots denote the reconstructions of the first green dot, the brown dot and the second green dot. As illustrated, <b>d₁ &gt; d₂</b>, indicating that the reconstruction error for human text is larger than that for LLM-generated text, which aligns with Proposition 1 in the paper. Additionally, <b>d₁ &gt; d₃</b> suggests that rewrite-based methods remain robust to prompt-induced distribution shifts, as formalized in Proposition 2 in the paper.
 </details>
 
 <p align="center" style="margin: 10px 0 0 0;"></p>
 <figure style="margin: 0;">
   <p align="center" style="margin: 0;">
-    <img src="figure/workflow.png" alt="L2D workflow" width="95%">
+    <img src="figure/workflow.png" alt="L2D workflow" width="81%">
   </p>
   <p align="center" style="margin: -12px 0 0 0;">
     <sub><b>Figure 2.</b> 🧭 Workflow of the proposal: our method adaptively learns a distance metric to measure the discrepancy between human and LLM-generated texts for detection.</sub>
