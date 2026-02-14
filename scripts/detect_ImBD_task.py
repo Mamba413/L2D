@@ -1,12 +1,11 @@
 from ImBD.dataset import CustomDataset_rewrite
 from ImBD.spo import ComputeScore
-from ImBD.engine4 import run
+from ImBD.engine import run
 import torch
 from torch.utils.data import Subset
 import argparse
 import numpy as np
 import random
-import os
 
 def set_seed(seed):
     torch.manual_seed(seed)

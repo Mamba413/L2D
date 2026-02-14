@@ -114,11 +114,12 @@ def fine_tune_ours(model, data, DEVICE, ckpt_dir='./ckpt', args=None):
         writer.add_scalar('Sampled_std/epoch',np.std(epoch_crit_train_sampled),epoch)
         epoch_crit_train_original, epoch_crit_train_sampled = [],[] # reset crit
         print(f"\nAverage Loss for Epoch {epoch}: {epoch_avg_loss}")
-            
-    # if not os.path.exists(ckpt_dir):
-    #     os.makedirs(ckpt_dir)
-    # model.save_pretrained(ckpt_dir)
-    # print(f"Saved finetuned model to {os.path.join(ckpt_dir, 'ours-finetuned.pth')}")
+
+    if args.save_trained:
+        if not os.path.exists(ckpt_dir):
+            os.makedirs(ckpt_dir)
+        model.save_pretrained(ckpt_dir)
+        print(f"Saved finetuned model to {os.path.join(ckpt_dir, 'ours-finetuned.pth')}")
     
     writer.close()
     return model
