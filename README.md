@@ -38,7 +38,7 @@ and strengthens this paradigm via **distance learning** (**Figure 2** 🧭).
   - [Setup](#setup)
 - [🚀 Usage](#-usage)
   - [Run on a dataset with a pretrained checkpoint](#run-on-a-dataset-with-a-pretrained-checkpoint)
-  - [Train / evaluate on your own data](#train--evaluate-on-your-own-data)
+  - [Train & evaluate on your own data](#train-&-evaluate-on-your-own-data)
 - [🎁 Additional Resources](#-additional-resources)
   - [Implemented baselines](#implemented-baselines)
   - [Reproducibility guide](#reproducibility-guide)
@@ -76,7 +76,7 @@ python scripts/detect_l2d.py --from_pretrained mamba413/L2D   --eval_dataset exa
 
 ---
 
-### Train / evaluate on your own data
+### Train & evaluate on your own data
 
 Recommended when you want to:
 - 🔧 improve performance on your specific domain, or
