@@ -20,6 +20,9 @@ gpu_device='cuda'
 source_models="gpt-4o gemini-2.5-flash claude-3-5-haiku"
 datasets="xsum squad writing"
 tasks="expand rewrite polish"
+# S='gemma-9b:gemma-9b-instruct'
+S='gemma-9b-instruct:gemma-9b'
+scoring_models="gemma-9b-instruct"
 
 # preparing dataset
 for task in $tasks; do
@@ -36,9 +39,6 @@ for task in $tasks; do
     done
   done
 done
-
-S='gemma-9b:gemma-9b-instruct'
-scoring_models="gemma-9b-instruct"
 
 # evaluate the rewrite-based method
 for task in $tasks; do
@@ -130,10 +130,10 @@ for M_test in $source_models; do
 
     for task in $tasks; do
       python scripts/detect_gpt_ada.py \
-        --dataset $D \
+        --dataset $D --num_subsample 500 \
         --sampling_model_name ${M1} --scoring_model_name $M2 \
         --train_dataset ${train_dataset} \
-        --eval_dataset ${data_path}/${D}_${M_test}_${task} \
+        --dataset_file ${data_path}/${D}_${M_test}_${task} \
         --output_file ${res_path}/${D}_${M_test}_${task}
     done
   done
@@ -209,4 +209,4 @@ for M_test in $source_models; do
     done
   done
 done
-/usr/bin/shutdown
+# /usr/bin/shutdown

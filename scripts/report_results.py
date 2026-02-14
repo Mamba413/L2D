@@ -62,10 +62,10 @@ def report_black_prompt_results(args):
         'bartscorer': 'BARTScore',
         'roberta-large-openai-detector': 'RoBERTa',
         'radar': 'RADAR',
+        'AdaDetectGPT.bspline': 'ADGPT',
         'raidar': 'RAIDAR',
         'imbd': 'ImBD',
         'fixdistance': 'FD',
-        # 'adarewritegpt_auc.rewrite_4': 'Ours',
         'l2d': 'L2D',
     }
     all_methods = {**methods1, **methods2}  # 按顺序合并
@@ -429,7 +429,7 @@ def report_diverse_results_old(args):
         'likelihood': 'Likelihood',
         'entropy': 'Entropy',
         'logrank': 'LogRank',
-        # 'lrr': 'LRR',
+        'lrr': 'LRR',
         # 'npr': 'NPR', 
         # 'dna_gpt': 'DNAGPT',
         'binoculars': 'Binoculars',
