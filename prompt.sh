@@ -37,7 +37,7 @@ for task in $tasks; do
   done
 done
 
-settings='gemma-9b:gemma-9b-instruct'
+S='gemma-9b:gemma-9b-instruct'
 scoring_models="gemma-9b-instruct"
 
 # evaluate the rewrite-based method
@@ -54,15 +54,13 @@ for task in $tasks; do
 done
 
 # evaluate FastDetectGPT and Binoculars
+IFS=':' read -r -a S <<< $S && M1=${S[0]} && M2=${S[1]}
+echo `date`, Evaluating Fast-DetectGPT with sampling model ${M1} and scoring model ${M2} ...
 for M in $source_models; do
   for task in $tasks; do
     for D in $datasets; do
-      for S in $settings; do
-        IFS=':' read -r -a S <<< $S && M1=${S[0]} && M2=${S[1]}
-        echo `date`, Evaluating Fast-DetectGPT on ${D}_${M}.${M1}_${M2} ...
-        python scripts/detect_gpt_fast.py --sampling_model_name $M1 --scoring_model_name $M2 --dataset $D --dataset_file $data_path/${D}_${M}_${task} --output_file $res_path/${D}_${M}_${task} --discrepancy_analytic --device $gpu_device
-        python scripts/detect_binoculars.py --model1_name $M1 --model2_name $M2 --dataset $D --dataset_file $data_path/${D}_${M}_${task} --output_file $res_path/${D}_${M}_${task} --device $gpu_device
-      done
+      python scripts/detect_gpt_fast.py --sampling_model_name $M1 --scoring_model_name $M2 --dataset $D --dataset_file $data_path/${D}_${M}_${task} --output_file $res_path/${D}_${M}_${task} --discrepancy_analytic --device $gpu_device
+      python scripts/detect_binoculars.py --model1_name $M1 --model2_name $M2 --dataset $D --dataset_file $data_path/${D}_${M}_${task} --output_file $res_path/${D}_${M}_${task} --device $gpu_device
     done
   done
 done
@@ -99,6 +97,44 @@ for task in $tasks; do
         echo `date`, Evaluating ${SM} on ${D}_${M}_${task} ...
         python scripts/detect_roberta.py --model_name $SM --dataset_file $data_path/${D}_${M}_${task} --output_file $res_path/${D}_${M}_${task} --device $gpu_device
       done
+    done
+  done
+done
+
+# evaluate AdaDetectGPT (cross-LLM training)
+IFS=':' read -r -a S <<< $S && M1=${S[0]} && M2=${S[1]}
+echo `date`, Evaluating AdaDetectGPT with sampling model ${M1} and scoring model ${M2} ...
+for M_test in $source_models; do
+  for D in $datasets; do
+    train_dataset=""
+
+    for M_train in $source_models; do
+      if [ "$M_train" = "$M_test" ]; then
+        continue  # exclude LLMs that are identical to the LLM to be detected
+      fi
+
+      for D1 in $datasets; do
+        if [ "$D1" = "$D" ]; then
+          continue  # exclude datasets that are identical to the dataset to be detected
+        fi
+
+        for T1 in $tasks; do
+          if [ -z "$train_dataset" ]; then
+            train_dataset="${data_path}/${D1}_${M_train}_${T1}"
+          else
+            train_dataset="${train_dataset}&${data_path}/${D1}_${M_train}_${T1}"
+          fi
+        done
+      done
+    done
+
+    for task in $tasks; do
+      python scripts/detect_gpt_ada.py \
+        --dataset $D \
+        --sampling_model_name ${M1} --scoring_model_name $M2 \
+        --train_dataset ${train_dataset} \
+        --eval_dataset ${data_path}/${D}_${M_test}_${task} \
+        --output_file ${res_path}/${D}_${M_test}_${task}
     done
   done
 done
