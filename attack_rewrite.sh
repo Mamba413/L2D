@@ -15,10 +15,9 @@ src_path=exp_prompt
 src_data_path=$src_path/data
 datasets="xsum squad writing"
 M_test="claude-3-5-haiku"
-M_train="claude-3-5-haiku"
+M_train="claude-3-5-haiku"  ## it is fair as the comparison is conducted over the ML-based method
 M2='gemma-9b-instruct'
-# paras="vanilla random t5"  # "vanilla" for no attack, "t5" for paraphrasing attack, or "random" for decoherence attack
-paras="vanilla"
+paras="vanilla random t5"  # "vanilla" for no attack, "t5" for paraphrasing attack, or "random" for decoherence attack
 
 for para in $paras; do
     data_path=$exp_path/data/$para
@@ -69,40 +68,40 @@ for para in $paras; do
             --batch_size 2
     done
 
-    # # evaluate L2D & ImBD
-    # for D in $datasets; do
-    #     train_dataset=""
-    #     for D1 in $datasets; do
-    #         if [ "$D1" = "$D" ]; then
-    #             continue  # 排除测试 dataset
-    #         fi
+    # evaluate L2D & ImBD
+    for D in $datasets; do
+        train_dataset=""
+        for D1 in $datasets; do
+            if [ "$D1" = "$D" ]; then
+                continue  # 排除测试 dataset
+            fi
 
-    #         if [ -z "$train_dataset" ]; then
-    #             train_dataset="${data_path}/${D1}_${M_train}_polish&${data_path}/${D1}_${M_train}_rewrite&${data_path}/${D1}_${M_train}_expand"
-    #         else
-    #             train_dataset="${train_dataset}&${data_path}/${D1}_${M_train}_polish&${data_path}/${D1}_${M_train}_rewrite&${data_path}/${D1}_${M_train}_expand"
-    #         fi
-    #     done
+            if [ -z "$train_dataset" ]; then
+                train_dataset="${data_path}/${D1}_${M_train}_polish&${data_path}/${D1}_${M_train}_rewrite&${data_path}/${D1}_${M_train}_expand"
+            else
+                train_dataset="${train_dataset}&${data_path}/${D1}_${M_train}_polish&${data_path}/${D1}_${M_train}_rewrite&${data_path}/${D1}_${M_train}_expand"
+            fi
+        done
 
-    #     echo "Train data (AdaDist/ImBD): $train_dataset"
+        echo "Train data (AdaDist/ImBD): $train_dataset"
 
-    #     python scripts/detect_l2d.py \
-    #         --datanum 500 \
-    #         --base_model ${M2} \
-    #         --train_dataset ${train_dataset} \
-    #         --eval_after_train \
-    #         --eval_dataset $data_path/${D}_${M_test}_polish \
-    #         --output_file $res_path/${D}_${M_test}_polish \
-    #         --regen_number 2 \
-    #         --batch_size 2
+        python scripts/detect_l2d.py \
+            --datanum 500 \
+            --base_model ${M2} \
+            --train_dataset ${train_dataset} \
+            --eval_after_train \
+            --eval_dataset $data_path/${D}_${M_test}_polish \
+            --output_file $res_path/${D}_${M_test}_polish \
+            --regen_number 2 \
+            --batch_size 2
 
-    #     python scripts/detect_ImBD_task.py \
-    #         --datanum 500 \
-    #         --base_model ${M2} \
-    #         --train_dataset ${train_dataset} \
-    #         --eval_after_train \
-    #         --eval_dataset $data_path/${D}_${M_test}_polish \
-    #         --output_file $res_path/${D}_${M_test}_polish
-    # done
+        python scripts/detect_ImBD_task.py \
+            --datanum 500 \
+            --base_model ${M2} \
+            --train_dataset ${train_dataset} \
+            --eval_after_train \
+            --eval_dataset $data_path/${D}_${M_test}_polish \
+            --output_file $res_path/${D}_${M_test}_polish
+    done
 done
-# /usr/bin/shutdown
+/usr/bin/shutdown
