@@ -4,31 +4,36 @@
 ![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white)
 
 This repository contains the official implementation of **[Learn-to-Distance: Distance Learning for Detecting LLM-Generated Text](https://openreview.net/forum?id=2ZUPeEM3FH)** (accepted at **ICLR 2026**).  
-L2D provides 
+L2D provides a **geometric projection** viewpoint on the effectiveness of rewrite-based detectors (**Figure 1**)  
+and strengthens this paradigm via **distance learning** (**Figure 2**).
+
+---
+
+## 🧠 Intuition & Workflow
 
 <p align="center">
-a **geometric projection** viewpoint on the effectiveness of rewrite-based detectors (see the second figure), 
-</p>
-
-and strengthens 
-
-<p align="center">
-this paradigm via **distance learning** (see the second figure). 
-</p>
-
-<p align="center">
-  <img src="figure/Projection.png" alt="L2D workflow" width="60%">
+  <img src="figure/Projection.png" alt="Projection intuition behind rewrite-based detection" width="60%">
 </p>
 <p align="center">
-Figure 1: the rationale behind rewrite-based methods: the brown dot represents a human-authored text after embedding, while the two green dots represent its projection onto the LLM subspace and an LLM-generated text produced from an unobserved prompt, respectively. From left to right, the purple dots denote the reconstructions of the first green dot, the brown dot and the second green dot. As illustrated, $d_1 > d_2$, indicating that the reconstruction error for human text is larger than that for LLM-generated text, which aligns with Proposition 1 in the paper. Additionally, $d_1 > d_3$ suggests that rewrite-based methods remain robust to prompt-induced distribution shifts, as formalized in Proposition 2 in the paper.
+  <sub><b>Figure 1.</b> Projection intuition behind rewrite-based detection. (Click to expand the full explanation 👇)</sub>
 </p>
+
+<details>
+<summary><b>📝 Full explanation for Figure 1</b></summary>
+
+The brown dot represents a human-authored text after embedding, while the two green dots represent its projection onto the LLM subspace and an LLM-generated text produced from an unobserved prompt, respectively. From left to right, the purple dots denote the reconstructions of the first green dot, the brown dot and the second green dot. As illustrated, <b>d₁ &gt; d₂</b>, indicating that the reconstruction error for human text is larger than that for LLM-generated text, which aligns with Proposition 1 in the paper. Additionally, <b>d₁ &gt; d₃</b> suggests that rewrite-based methods remain robust to prompt-induced distribution shifts, as formalized in Proposition 2 in the paper.
+
+</details>
+
+<br/>
 
 <p align="center">
   <img src="figure/workflow.png" alt="L2D workflow" width="95%">
 </p>
 <p align="center">
-Workflow of the proposal. Our method adaptively learn a distance metric to measure the discrepancy between human and LLM-generated texts for detection.
+  <sub><b>Figure 2.</b> Workflow of the proposal: our method adaptively learns a distance metric to measure the discrepancy between human and LLM-generated texts for detection.</sub>
 </p>
+
 
 ## 🛠️ Installation
 
