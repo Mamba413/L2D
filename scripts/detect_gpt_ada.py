@@ -130,10 +130,10 @@ def experiment(args):
                 logits_ref = sampling_model(**tokenized).logits[:, :-1]
             sampled_crit = criterion_fn(logits_ref, logits_score, labels, w_func, shift_value)
         # result
-        results.append({"original": original_text,
-                        "original_crit": original_crit,
-                        "sampled": sampled_text,
-                        "sampled_crit": sampled_crit})
+        results.append({
+            "original_crit": original_crit,
+            "sampled_crit": sampled_crit
+        })
     eval_time = np.mean(np.array([eval_time_list]))
     eval_memory = np.mean(np.array([eval_memory_list]))
     
@@ -147,18 +147,19 @@ def experiment(args):
     p, r, pr_auc = get_precision_recall_metrics(predictions['real'], predictions['samples'])
     print(f"Criterion {name}_threshold ROC AUC: {roc_auc:.4f}, PR AUC: {pr_auc:.4f}")
 
-    results = { 'name': f'{name}_threshold',
-                'info': {'n_samples': n_samples},
-                'predictions': predictions,
-                'raw_results': results,
-                'metrics': {'roc_auc': roc_auc, 'fpr': fpr, 'tpr': tpr},
-                'pr_metrics': {'pr_auc': pr_auc, 'precision': p, 'recall': r},
-                'loss': 1 - pr_auc, 
-                'beta': beta, 
-                'bias': shift_value.detach().cpu().tolist(),
-                'compute_info': {'pre_time': pre_time, 'eval_time': eval_time, 
-                                    'pre_memory': pre_memory, 'eval_memory': eval_memory,}
-                    }
+    results = { 
+        'name': f'{name}',
+        'info': {'n_samples': n_samples},
+        'predictions': predictions,
+        'raw_results': results,
+        'metrics': {'roc_auc': roc_auc, 'fpr': fpr, 'tpr': tpr},
+        'pr_metrics': {'pr_auc': pr_auc, 'precision': p, 'recall': r},
+        'loss': 1 - pr_auc, 
+        'beta': beta, 
+        'bias': shift_value.detach().cpu().tolist(),
+        'compute_info': {'pre_time': pre_time, 'eval_time': eval_time, 
+                         'pre_memory': pre_memory, 'eval_memory': eval_memory,}
+    }
         
     with open(results_file, 'w') as fout:
         json.dump(results, fout)
