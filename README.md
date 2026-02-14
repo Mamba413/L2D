@@ -32,6 +32,17 @@ and strengthens this paradigm via **distance learning** (**Figure 2** 🧭).
   </p>
 </figure>
 
+## 🧭 Table of Contents
+- [🛠️ Installation](#️-installation)
+  - [Requirements](#requirements)
+  - [Setup](#setup)
+- [🚀 Usage](#-usage)
+  - [Run on a dataset with a pretrained checkpoint](#run-on-a-dataset-with-a-pretrained-checkpoint)
+  - [Train / evaluate on your own data](#train--evaluate-on-your-own-data)
+- [🎁 Additional Resources](#-additional-resources)
+  - [Implemented baselines](#implemented-baselines)
+  - [Reproducibility guide](#reproducibility-guide)
+- [📖 Citation](#-citation)
 
 ## 🛠️ Installation
 
