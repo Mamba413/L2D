@@ -144,7 +144,7 @@ If you find this work useful, please consider citing our paper:
 ```bibtex
 @inproceedings{zhou2026learn,
   title={Learn-to-Distance: Distance Learning for Detecting LLM-Generated Text},
-  author={Hongyi Zhou and Jin Zhu and Erhan Xu and Kai Ye and Ying Yang and Chengchun Shi},
+  author={Hongyi Zhou and Jin Zhu and Kai Ye and Ying Yang and Erhan Xu and Chengchun Shi},
   booktitle={The Fourteenth International Conference on Learning Representations},
   abbr={ICLR},
   year={2026},
