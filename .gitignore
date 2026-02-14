@@ -2,3 +2,4 @@
 .Rhistory
 *.pyc
 scripts/AdaDist/ckpt/*
+scoring_model/*

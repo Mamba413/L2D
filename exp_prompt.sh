@@ -209,4 +209,3 @@ for M_test in $source_models; do
     done
   done
 done
-# /usr/bin/shutdown
