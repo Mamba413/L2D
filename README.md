@@ -17,7 +17,7 @@ this paradigm via **distance learning** (see the second figure).
 </p>
 
 <p align="center">
-  <img src="figure/Projection.png" alt="L2D workflow" width="95%">
+  <img src="figure/Projection.png" alt="L2D workflow" width="60%">
 </p>
 <p align="center">
 Figure 1: the rationale behind rewrite-based methods: the brown dot represents a human-authored text after embedding, while the two green dots represent its projection onto the LLM subspace and an LLM-generated text produced from an unobserved prompt, respectively. From left to right, the purple dots denote the reconstructions of the first green dot, the brown dot and the second green dot. As illustrated, $d_1 > d_2$, indicating that the reconstruction error for human text is larger than that for LLM-generated text, which aligns with Proposition 1 in the paper. Additionally, $d_1 > d_3$ suggests that rewrite-based methods remain robust to prompt-induced distribution shifts, as formalized in Proposition 2 in the paper.
