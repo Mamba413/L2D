@@ -13,9 +13,9 @@ python scripts/model.py --model_name='gemma-9b-instruct'
 
 NLTK_DIR="$HOME/nltk_data"
 
-# # 确保目录存在
-# mkdir -p "$NLTK_DIR/corpora"
-# mkdir -p "$NLTK_DIR/tokenizers"
+# ensure directories exit
+mkdir -p "$NLTK_DIR/corpora"
+mkdir -p "$NLTK_DIR/tokenizers"
 
 # stopwords
 wget -O "$NLTK_DIR/stopwords.zip" \
