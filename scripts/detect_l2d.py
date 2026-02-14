@@ -118,8 +118,17 @@ if __name__ == '__main__':
     ## load model
     if args.from_pretrained:
         print(f"Loading ckpt from {args.from_pretrained}...")
+        if os.path.isdir(args.from_pretrained):
+            load_path = args.from_pretrained
+        else:
+            from huggingface_hub import snapshot_download
+            print("Detected HuggingFace repo. Downloading...")
+            load_path = snapshot_download(
+                repo_id=args.from_pretrained,
+                cache_dir=args.cache_dir,
+            )
         model = AdaDist.from_pretrained(
-            load_directory=args.from_pretrained,
+            load_directory=load_path,
             model_name=args.base_model,
             device=args.device,
             cache_dir=args.cache_dir,
