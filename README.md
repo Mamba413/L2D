@@ -22,8 +22,7 @@ This repository contains the implementation of [Learn-to-Distance: Distance Lear
 ./setup.sh
 ```
 
-## Usage
-
+## Usages
 
 ### Experiment on one dataset with pretrained checkpoint
 
@@ -34,9 +33,12 @@ python scripts/detect_l2d.py --from_pretrain mamba413/L2D --eval_dataset example
 ```
 
 Pretreined details:
-- rewritten model: `google/gemma-2-9b-it`
+
+- rewritten model: [`google/gemma-2-9b-it`](https://huggingface.co/google/gemma-2-9b-it)
 - training dataset texts from GPT-4o, Gemini-2.5, and Claude-3.5. 
-- The pre-trained LoRA adapter in huggingface:
+- The pre-trained LoRA adapter in huggingface repo: [`mamba413/L2D`](https://huggingface.co/mamba413/L2D/tree/main)
+
+If you are interested in your own pretrained model, the potential direction is using better or cheaper rewritten model like [`Qwen/Qwen3-4B`](https://huggingface.co/Qwen/Qwen3-4B) or your own dataset. 
 
 
 ### Experiment on your data 
@@ -46,7 +48,24 @@ Recommended in the following cases:
 - to improve performance on your specific domain
 - fairly compare with other training based methods
 
+The training dataset should be a `.json` file named `xxx.raw_data.json` with the following structure:
 
+```json
+{
+  "original": ["human-text-1", "human-text-2", "..."],
+  "sampled": ["machine-text-1", "machine-text-2", "..."]
+}
+```
+
+```sh
+python scripts/detect_l2d.py --train_dataset "./exp_prompt/data/squad_claude-3-5-haiku" --save_trained 
+```
+
+The checkpoint would be saved to `./scripts/AdaDist/ckpt/` by default. You can use the following comment:
+
+```sh
+python scripts/detect_l2d.py --eval_only --eval_dataset your_data --output_file your_result --from_pretrained ./scripts/AdaDist/ckpt/
+```
 
 ## 🎁 Additional Resources
 
