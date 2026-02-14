@@ -112,7 +112,7 @@ python scripts/detect_l2d.py --eval_only --eval_dataset your_data --output_file 
 
 ## 🎁 Additional Resources
 
-The `scripts/` directory contains implementations of various LLM detection methods from the literature. These implementations are modified from their official versions or from **AdaDetectGPT** to provide:
+The `scripts/` directory contains implementations of various LLM detection methods from the literature. These implementations are modified from their official versions or from **L2D** to provide:
 - consistent input/output formats
 - simplified method comparison
 
@@ -133,7 +133,7 @@ The `scripts/` directory contains implementations of various LLM detection metho
 | **RADIAR**                  | `detect_radiar.py`     | [arXiv:2401.12970](https://arxiv.org/abs/2401.12970)            |
 | **RoBERTa OpenAI Detector** | `detect_roberta.py`    | [arXiv:1908.09203](https://arxiv.org/abs/1908.09203)            |
 
-We build upon and extend code from **[AdaDetectGPT](https://github.com/Mamba413/AdaDetectGPT)**.
+Additional baselines can be found in a comprehensive github repo: **[AdaDetectGPT](https://github.com/Mamba413/AdaDetectGPT)**.
 
 ### Reproducibility guide
 - `exp_diverse.sh`: generate Table 1 and Tables B1–B4
