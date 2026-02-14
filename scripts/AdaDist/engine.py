@@ -40,7 +40,7 @@ def evaluate_model(model, data, device):
     print("="*10)
     
     results_dict = {
-        "name": "rewrite_gpt_ada",
+        "name": "l2d",
         'info': {'n_samples': len(epoch_crit_train_original)},
         'predictions': {'real': epoch_crit_train_original, 
                         'samples': epoch_crit_train_sampled},
