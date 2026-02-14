@@ -143,7 +143,7 @@ After running the above code, use:
 ```bash
 python script/report_results.py
 ```
-You can call either `report_black_prompt_results` or `report_diverse_results` to render the tables/figures.
+You can call either `report_black_prompt_results` or `report_diverse_results` to render the tables/figures. To speedup the reproducibility, we include the rewritten texts for Table 2 in the directory `exp_prompt`. 
 
 - `exp_attack.sh`: reproduce Figure 4 (use `fig4.py` to produce Figure 4 in the main text)
 
