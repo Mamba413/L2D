@@ -6,7 +6,8 @@
 This repository contains the official implementation of **[Learn-to-Distance: Distance Learning for Detecting LLM-Generated Text](https://openreview.net/forum?id=2ZUPeEM3FH)** (accepted at **ICLR 2026**).  
 
 L2D provides a **geometric projection** viewpoint on the effectiveness of rewrite-based detectors (**Figure 1** 🧠)  
-and strengthens this paradigm via **distance learning** (**Figure 2** 🧭).
+and strengthens this paradigm via **distance learning** (**Figure 2** 🧭). Under experimental settings, it achieves **state-of-the-art performance** across a wide range of LLMs and datasets (**Figure 3** 🏆).
+
 
 <figure style="margin: 0;">
   <p align="center" style="margin: 0;">
@@ -29,6 +30,16 @@ and strengthens this paradigm via **distance learning** (**Figure 2** 🧭).
   </p>
   <p align="center" style="margin: -12px 0 0 0;">
     <sub><b>Figure 2.</b> 🧭 Workflow of the proposal: our method adaptively learns a distance metric to measure the discrepancy between human and LLM-generated texts for detection.</sub>
+  </p>
+</figure>
+
+<p align="center" style="margin: 10px 0 0 0;"></p>
+<figure style="margin: 0;">
+  <p align="center" style="margin: 0;">
+    <img src="figure/performance.png" alt="L2D performance" width="81%">
+  </p>
+  <p align="center" style="margin: -12px 0 0 0;">
+    <sub><b>Figure 3.</b> 🏆 AUC scores across datasets, models, and tasks; best method highlighted in blue, second best in orange. </sub>
   </p>
 </figure>
 
