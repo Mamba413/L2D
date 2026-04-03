@@ -1,4 +1,4 @@
-# Learn-to-Distance (L2D): Distance Learning for Detecting LLM-Generated Text ✨
+# [ICLR 2026] Learn-to-Distance (L2D): Distance Learning for Detecting LLM-Generated Text ✨
 
 [![ICLR 2026](https://img.shields.io/badge/ICLR-2026-7B68EE)](https://openreview.net/forum?id=2ZUPeEM3FH)
 ![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white)
